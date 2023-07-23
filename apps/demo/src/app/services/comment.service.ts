@@ -2,7 +2,7 @@ import { getHeaders } from '../utils/headers.util';
 import { Comment } from '../models/comment.model';
 
 export async function getComments(slug: string): Promise<Comment[]> {
-  return fetch(`https://api.realworld.io/api/articles/${slug}/comments`, {
+  return fetch(`http://localhost:3000/api/articles/${slug}/comments`, {
     headers: getHeaders(),
   })
     .then(res => res.json())
@@ -10,7 +10,7 @@ export async function getComments(slug: string): Promise<Comment[]> {
 }
 
 export async function createComment(slug: string, body: string): Promise<Comment> {
-  return fetch(`https://api.realworld.io/api/articles/${slug}/comments`, {
+  return fetch(`http://localhost:3000/api/articles/${slug}/comments`, {
     method: 'POST',
     headers: getHeaders(),
     body: JSON.stringify({
@@ -24,7 +24,7 @@ export async function createComment(slug: string, body: string): Promise<Comment
 }
 
 export async function deleteComment(slug: string, id: number): Promise<Response> {
-  return fetch(`https://api.realworld.io/api/articles/${slug}/comments/${id}`, {
+  return fetch(`http://localhost:3000/api/articles/${slug}/comments/${id}`, {
     method: 'DELETE',
     headers: getHeaders(),
   });
