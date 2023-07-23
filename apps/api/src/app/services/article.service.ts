@@ -46,7 +46,9 @@ const buildFindAllQuery = (query: any, username: string | undefined) => {
     queries.push({
       tagList: {
         some: {
-          name: query.tag,
+          name: {
+            in: query.tag.split(','),
+          },
         },
       },
     });

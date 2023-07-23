@@ -17,16 +17,16 @@ export default function HomePage() {
   const { user } = useContext(AuthContext);
   const [page, setPage] = useState(1);
   const [tab, setTab] = useState<'global' | 'personal' | 'tag'>(user ? Tab.Personal : Tab.Global);
-  const [activeTag, setActiveTag] = useState<string | undefined>(undefined);
+  const [activeTags, setActiveTags] = useState<string[]>([]);
   const { data, isLoading } = useQuery<{ articles: Article[]; articlesCount: number }>({
-    queryKey: ['articles', 'home', tab, activeTag, page],
+    queryKey: ['articles', 'home', tab, activeTags, page],
     queryFn: ({ signal }) => {
       if (tab === Tab.Global) {
         return getArticles({ offset: (page - 1) * 10 }, signal);
       } else if (tab === Tab.Personal) {
         return getPersonalFeed({ offset: (page - 1) * 10 }, signal);
       } else {
-        return getArticles({ offset: (page - 1) * 10, tag: activeTag }, signal);
+        return getArticles({ offset: (page - 1) * 10, tag: activeTags.join(',') }, signal);
       }
     },
   });
@@ -38,7 +38,7 @@ export default function HomePage() {
   }
 
   function updateTag(tag: string): void {
-    setActiveTag(tag);
+    setActiveTags([...activeTags, tag]);
     setTab(Tab.Tag);
     setPage(1);
   }
@@ -79,17 +79,33 @@ export default function HomePage() {
                     Global Feed
                   </a>
                 </li>
-                {activeTag && (
-                  <li className="nav-item">
-                    <a
-                      className={`nav-link ${tab === Tab.Tag ? 'active' : ''}`}
-                      href=""
-                      onClick={event => switchTab(Tab.Tag, event)}
-                    >
-                      #{activeTag}
-                    </a>
-                  </li>
-                )}
+                {activeTags.length > 0 &&
+                  activeTags.map(activeTag => {
+                    return (
+                      <li className="nav-item">
+                        <a
+                          className={`nav-link ${tab === Tab.Tag ? 'active' : ''}`}
+                          href=""
+                          onClick={event => switchTab(Tab.Tag, event)}
+                        >
+                          #{activeTag}
+                          <button
+                            className="btn btn-link"
+                            onClick={() => {
+                              setActiveTags(
+                                activeTags.filter(tag => {
+                                  if (activeTag == tag) return false;
+                                  return true;
+                                }),
+                              );
+                            }}
+                          >
+                            x
+                          </button>
+                        </a>
+                      </li>
+                    );
+                  })}
               </ul>
             </div>
 
