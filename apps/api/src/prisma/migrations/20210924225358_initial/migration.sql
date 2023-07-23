@@ -60,6 +60,12 @@ CREATE TABLE "_UserFavorites" (
 );
 
 -- CreateTable
+CREATE TABLE "_UserDislikes" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
+);
+
+-- CreateTable
 CREATE TABLE "_UserFollows" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
@@ -77,8 +83,13 @@ CREATE UNIQUE INDEX "User.username_unique" ON "User"("username");
 -- CreateIndex
 CREATE UNIQUE INDEX "_UserFavorites_AB_unique" ON "_UserFavorites"("A", "B");
 
+
+CREATE UNIQUE INDEX "_UserDislikes_AB_unique" ON "_UserDislikes"("A", "B");
+
 -- CreateIndex
 CREATE INDEX "_UserFavorites_B_index" ON "_UserFavorites"("B");
+
+CREATE INDEX "_UserDislikes_B_index" ON "_UserDislikes"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_UserFollows_AB_unique" ON "_UserFollows"("A", "B");
@@ -104,8 +115,12 @@ ALTER TABLE "Comment" ADD FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DE
 -- AddForeignKey
 ALTER TABLE "_UserFavorites" ADD FOREIGN KEY ("A") REFERENCES "Article"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
+ALTER TABLE "_UserDislikes" ADD FOREIGN KEY ("A") REFERENCES "Article"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
 -- AddForeignKey
 ALTER TABLE "_UserFavorites" ADD FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "_UserDislikes" ADD FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_UserFollows" ADD FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

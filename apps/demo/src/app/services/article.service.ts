@@ -81,3 +81,21 @@ export async function unfavoriteArticle(slug: string): Promise<Article> {
     .then(res => res.json())
     .then(res => res.article);
 }
+
+export async function dislikeArticle(slug: string): Promise<Article> {
+  return fetch(`http://localhost:3000/api/articles/${slug}/dislike`, {
+    method: 'POST',
+    headers: getHeaders(),
+  })
+    .then(res => res.json())
+    .then(res => res.article);
+}
+
+export async function undislikeArticle(slug: string): Promise<Article> {
+  return fetch(`http://localhost:3000/api/articles/${slug}/dislike`, {
+    method: 'DELETE',
+    headers: getHeaders(),
+  })
+    .then(res => res.json())
+    .then(res => res.article);
+}
