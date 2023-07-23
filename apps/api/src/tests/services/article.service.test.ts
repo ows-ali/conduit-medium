@@ -1,7 +1,9 @@
 import prismaMock from '../prisma-mock';
 import {
   deleteComment,
+  dislikeArticle,
   favoriteArticle,
+  undislikeArticle,
   unfavoriteArticle,
 } from '../../app/services/article.service';
 
@@ -13,7 +15,6 @@ describe('ArticleService', () => {
       const username = 'RealWorld';
 
       // When
-      // @ts-ignore
       prismaMock.comment.findFirst.mockResolvedValue(null);
 
       // Then
@@ -58,9 +59,8 @@ describe('ArticleService', () => {
       };
 
       // When
-      // @ts-ignore
+
       prismaMock.user.findUnique.mockResolvedValue(mockedUserResponse);
-      // @ts-ignore
       prismaMock.article.update.mockResolvedValue(mockedArticleResponse);
 
       // Then
@@ -133,6 +133,119 @@ describe('ArticleService', () => {
 
       // Then
       await expect(unfavoriteArticle(slug, username)).rejects.toThrowError();
+    });
+  });
+
+  describe('dislikeArtilce', () => {
+    test('should return the disliked article', async () => {
+      // Given
+      const slug = 'How-to-train-your-dragon';
+      const username = 'RealWorld';
+
+      const mockedUserResponse = {
+        id: 123,
+        username: 'RealWorld',
+        email: 'realworld@me',
+        password: '1234',
+        bio: null,
+        image: null,
+        token: '',
+        demo: false,
+      };
+
+      const mockedArticleResponse = {
+        id: 123,
+        slug: 'How-to-train-your-dragon',
+        title: 'How to train your dragon',
+        description: '',
+        body: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        authorId: 456,
+        tagList: [],
+        dislikedBy: [],
+        author: {
+          username: 'RealWorld',
+          bio: null,
+          image: null,
+          followedBy: [],
+        },
+      };
+
+      // When
+      prismaMock.user.findUnique.mockResolvedValue(mockedUserResponse);
+      prismaMock.article.update.mockResolvedValue(mockedArticleResponse);
+
+      // Then
+      await expect(dislikeArticle(slug, username)).resolves.toHaveProperty('dislikesCount');
+    });
+
+    test('should throw an error if no user is found', async () => {
+      // Given
+      const slug = 'how-to-train-your-dragon';
+      const username = 'RealWorld';
+
+      // When
+      prismaMock.user.findUnique.mockResolvedValue(null);
+
+      // Then
+      await expect(favoriteArticle(slug, username)).rejects.toThrowError();
+    });
+  });
+  describe('undislikeArtilce', () => {
+    test('should return the undisliked article', async () => {
+      // Given
+      const slug = 'How-to-train-your-dragon';
+      const username = 'RealWorld';
+
+      const mockedUserResponse = {
+        id: 123,
+        username: 'RealWorld',
+        email: 'realworld@me',
+        password: '1234',
+        bio: null,
+        image: null,
+        token: '',
+        demo: false,
+      };
+
+      const mockedArticleResponse = {
+        id: 123,
+        slug: 'How-to-train-your-dragon',
+        title: 'How to train your dragon',
+        description: '',
+        body: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        authorId: 456,
+        tagList: [],
+        dislikedBy: [],
+        author: {
+          username: 'RealWorld',
+          bio: null,
+          image: null,
+          followedBy: [],
+        },
+      };
+
+      // When
+      prismaMock.user.findUnique.mockResolvedValue(mockedUserResponse);
+      prismaMock.article.update.mockResolvedValue(mockedArticleResponse);
+
+      // Then
+      await expect(undislikeArticle(slug, username)).resolves.toHaveProperty('dislikesCount');
+    });
+
+    test('should throw an error if no user is found', async () => {
+      // Given
+      const slug = 'how-to-train-your-dragon';
+      const username = 'RealWorld';
+
+      // When
+      prismaMock.user.findUnique.mockResolvedValue(null);
+
+      // Then
+      await expect(favoriteArticle(slug, username)).rejects.toThrowError();
     });
   });
 });
